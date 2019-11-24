@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Criacao de lambdas custom resources  
+  
+Resources:
+  createFolderS3:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: custom-resource-s3-folder
+      Handler: custom-resource.init
+      CodeUri: s3://aws-devops-deploy/3ad84c832723506f124e76de6d867185
+      Runtime: python3.6
+      MemorySize: 128
+      Timeout: 30
+      Role: !GetAtt s3FolderRole.Arn
+
+  s3FolderRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: Invoke
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - s3:*
+                Resource: "*"
+        - PolicyName: AWSCloudFormationFullAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - cloudformation:*
+                Resource: "*"    
+
+#colocar cloudwatch logs

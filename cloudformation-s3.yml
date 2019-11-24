@@ -1,0 +1,15 @@
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: bucket-custom-resource
+
+  S3FolderGenerator:
+    Type: AWS::CloudFormation::CustomResource
+    DependsOn:
+      - S3Bucket
+    Properties:
+      ServiceToken: arn:aws:lambda:us-east-1:675796402854:function:custom-resource-s3-folder
+      Bucket: "bucket-custom-resource"
+      Key:
+        - input
